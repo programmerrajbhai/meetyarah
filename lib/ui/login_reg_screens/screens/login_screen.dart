@@ -16,6 +16,8 @@ class _LoginScreenState extends State<LoginScreen> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Image.asset(ImagePath.appLogo),
 
@@ -25,6 +27,10 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             SizedBox(height: 8),
             Textfromfield(icon: Icons.lock, text: 'Password'),
+            TextButton(onPressed: (){},
+                child: Text("Forgot Password",style: TextStyle(
+                    color: ColorPath.deepBlue,fontSize: 16
+                ),)),
             SizedBox(height: 16),
             containnerBox(
               bgColors: ColorPath.deepBlue,
@@ -40,7 +46,8 @@ class _LoginScreenState extends State<LoginScreen> {
             containnerBox(bgColors: Colors.white,
                 text: 'Sign up by google',
                 prefixIcons: ImagePath.gogoleIcon,
-                textColors: Colors.black)
+                textColors: Colors.black),
+
           ],
         ),
       ),
