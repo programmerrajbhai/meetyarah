@@ -1,4 +1,6 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:meetyarah/assetsPath/image_url.dart';
 import 'package:meetyarah/assetsPath/textColors.dart';
 
@@ -14,7 +16,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(20.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -38,15 +40,35 @@ class _LoginScreenState extends State<LoginScreen> {
               textColors: Colors.white,
             ),
             SizedBox(height: 14),
-            Text("-------------------------or-------------------------",
-              style: TextStyle(color: Colors.grey,
-              fontSize: 18
-              ),),
+            Center(
+              child: Text("-------------------------or-------------------------",
+                style: TextStyle(color: Colors.grey,
+                fontSize: 18
+                ),),
+            ),
             SizedBox(height: 14),
             containnerBox(bgColors: Colors.white,
                 text: 'Sign up by google',
                 prefixIcons: ImagePath.gogoleIcon,
                 textColors: Colors.black),
+            SizedBox(height: 40),
+            Center(
+              child: RichText(text: TextSpan(
+                  text: "Don't have an account? ",
+                  style: TextStyle(color: Colors.grey, fontSize: 16),
+                  children: [
+                    TextSpan(
+                      text: 'Sign Up',style: TextStyle(color: Colors.indigoAccent,
+                    fontWeight: FontWeight.bold, decoration: TextDecoration.underline,
+                    ),
+                      recognizer: TapGestureRecognizer()..onTap=(){
+                        Get.snackbar("Sign up", "clcked to sign up ");
+                    }
+                    )
+                  ]
+              ),),
+            )
+
 
           ],
         ),
