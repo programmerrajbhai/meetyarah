@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:meetyarah/ui/login_reg_screens/screens/login_screen.dart';
+import 'package:meetyarah/ui/login_reg_screens/screens/reg_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -12,6 +13,7 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       home:  LoginScreen(),
+      theme: ThemeData.dark(),
     );
   }
 }
