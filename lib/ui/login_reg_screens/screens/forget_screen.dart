@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:meetyarah/assetsPath/textColors.dart';
-import 'package:meetyarah/ui/login_reg_screens/screens/login_screen.dart';
 import 'package:meetyarah/ui/login_reg_screens/widgets/Textfromfield.dart';
 import 'package:meetyarah/ui/login_reg_screens/widgets/containnerBox.dart';
 
@@ -30,9 +29,12 @@ class _ForgotScreensState extends State<ForgotScreens> {
             children: [
 
               SizedBox(height: 50,),
-              CircleAvatar(
-                backgroundColor: Color(0xA0F5F5F5),
-                child:Icon(Icons.arrow_back,size: 27,color: Colors.black,))
+              GestureDetector(
+                onTap: (){Get.back();},
+                child: CircleAvatar(
+                  backgroundColor: Color(0xA0F5F5F5),
+                  child:Icon(Icons.arrow_back,size: 27,color: Colors.black,)),
+              )
               ,
               SizedBox(height: 50,),
               Text("Forget Password",
