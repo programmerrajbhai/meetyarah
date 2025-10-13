@@ -26,7 +26,9 @@ class _LoginScreenState extends State<LoginScreen> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Image.asset(ImagePath.appLogotransparent),
+              Image.asset(ImagePath.appLogotransparent,
+              width: Get.width * 1,
+              height: Get.height * 0.35,),
               textfromfield(
                 icon: Icons.account_box,
                 text: 'Email or Phone Number',
@@ -49,10 +51,30 @@ class _LoginScreenState extends State<LoginScreen> {
                 textColors: Colors.white,
               ),
               SizedBox(height: 14),
-              Center(
-                child: Text(
-                  "-------------------------or-------------------------",
-                  style: TextStyle(color: Colors.grey, fontSize: 18),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 10.0),
+                child: Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: Divider(
+                        thickness: 1,
+                        color: Colors.grey[400],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                      child: Text(
+                        'or',
+                        style: TextStyle(color: Colors.grey[700], fontSize: 16),
+                      ),
+                    ),
+                    Expanded(
+                      child: Divider(
+                        thickness: 1,
+                        color: Colors.grey[400],
+                      ),
+                    ),
+                  ],
                 ),
               ),
               SizedBox(height: 14),
