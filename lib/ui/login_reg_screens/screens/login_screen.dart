@@ -28,7 +28,8 @@ class _LoginScreenState extends State<LoginScreen> {
             children: [
               Image.asset(ImagePath.appLogotransparent,
               width: Get.width * 1,
-              height: Get.height * 0.35,),
+              height: Get.height * 0.35,
+              ),
               textfromfield(
                 icon: Icons.account_box,
                 text: 'Email or Phone Number',
