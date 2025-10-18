@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:meetyarah/assetsPath/image_url.dart';
 import 'package:meetyarah/assetsPath/textColors.dart';
+import 'package:meetyarah/ui/home/screens/baseScreens.dart';
 import 'package:meetyarah/ui/login_reg_screens/screens/forget_screen.dart';
 import 'package:meetyarah/ui/login_reg_screens/screens/reg_screen.dart';
 import '../widgets/Textfromfield.dart';
@@ -46,10 +47,15 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               SizedBox(height: 16),
-              containnerBox(
-                bgColors: ColorPath.deepBlue,
-                text: "LOGIN",
-                textColors: Colors.white,
+              InkWell(
+                onTap: (){
+                  Get.to(Basescreens());
+                },
+                child: containnerBox(
+                  bgColors: ColorPath.deepBlue,
+                  text: "LOGIN",
+                  textColors: Colors.white,
+                ),
               ),
               SizedBox(height: 14),
               Padding(
