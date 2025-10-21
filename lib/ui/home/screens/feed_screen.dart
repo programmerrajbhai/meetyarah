@@ -37,7 +37,8 @@ class _FeedScreenState extends State<FeedScreen> {
                   ),
                   child: CircleAvatar(
                     radius: 25,
-                    backgroundImage: AssetImage(ImagePath.appLogo),
+                    backgroundImage: NetworkImage('https://images.pexels.com/photos/1040881/pexels-photo-1040881.jpeg?_gl=1*h0k086*_ga*MTcxMzA4Nzk4OS4xNzM0ODg2OTE0*_ga_8JE65Q40S6*czE3NjEwNjg2MTUkbzQkZzEkdDE3NjEwNjg2MjUkajUwJGwwJGgw')
+                    //child: Image.network('https://images.pexels.com/photos/1040881/pexels-photo-1040881.jpeg?_gl=1*h0k086*_ga*MTcxMzA4Nzk4OS4xNzM0ODg2OTE0*_ga_8JE65Q40S6*czE3NjEwNjg2MTUkbzQkZzEkdDE3NjEwNjg2MjUkajUwJGwwJGgw'),
                   ),
                 ),
 
@@ -80,7 +81,7 @@ class _FeedScreenState extends State<FeedScreen> {
 
               ],
             ),
-            SizedBox(height: 20,),
+            SizedBox(height: 10),
             Container(
               child:Text("Hi Everyone. today i was on the most "
                   "beautifull mountain in the world , I also want to say "
@@ -103,7 +104,7 @@ class _FeedScreenState extends State<FeedScreen> {
                 ),
               ),
             ),
-            SizedBox(height: 20,),
+            SizedBox(height: 15,),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
