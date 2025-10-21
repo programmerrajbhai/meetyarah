@@ -123,7 +123,7 @@ class _FeedScreenState extends State<FeedScreen> {
                                 icon: Icon(Icons.heart_broken),),
                             ),
                             SizedBox(width: 10,),
-                            Text("299k+, ",style:TextStyle(
+                            Text("299k+ ",style:TextStyle(
                               color: Colors.black,
                               fontWeight: FontWeight.bold
                             ), )
@@ -147,7 +147,7 @@ class _FeedScreenState extends State<FeedScreen> {
                             icon: Icon(Icons.comment),),
                         ),
                         SizedBox(width: 10,),
-                        Text("109k+, ",style:TextStyle(
+                        Text("109k+ ",style:TextStyle(
                             color: Colors.black,
                             fontWeight: FontWeight.bold
                         ), )
@@ -171,7 +171,7 @@ class _FeedScreenState extends State<FeedScreen> {
                             icon: Icon(Icons.share),),
                         ),
                         SizedBox(width: 10,),
-                        Text("59k+, ",style:TextStyle(
+                        Text("59k+ ",style:TextStyle(
                             color: Colors.black,
                             fontWeight: FontWeight.bold
                         ), )
