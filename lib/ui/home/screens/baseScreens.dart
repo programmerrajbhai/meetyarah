@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:meetyarah/assetsPath/image_url.dart';
 import 'package:meetyarah/assetsPath/textColors.dart';
+import 'package:meetyarah/ui/home/screens/feed_screen.dart';
 
 class Basescreens extends StatefulWidget {
   const Basescreens({super.key});
@@ -24,7 +25,7 @@ class _BasescreensState extends State<Basescreens> {
                 Row(
                   children: [
                     Text(
-                      "SImple World",
+                      "MEETYARAH",
                       style: TextStyle(
                         color: ColorPath.deepBlue,
                         fontWeight: FontWeight.bold,
@@ -78,7 +79,7 @@ class _BasescreensState extends State<Basescreens> {
                 Expanded(
                   child: TabBarView(
                     children: [
-                      Text("SCreens 1"),
+                      FeedScreen(),
                       Text("SCreens 2"),
                       Text("SCreens 3"),
                       Text("SCreens 4"),
