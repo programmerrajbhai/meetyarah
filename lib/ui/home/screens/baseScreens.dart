@@ -16,6 +16,7 @@ class _BasescreensState extends State<Basescreens> {
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 6,
+
       child: Scaffold(
         body: SafeArea(
           child: Padding(
@@ -25,7 +26,7 @@ class _BasescreensState extends State<Basescreens> {
                 Row(
                   children: [
                     Text(
-                      "MEETYARAH",
+                      "FACEBOOK",
                       style: TextStyle(
                         color: ColorPath.deepBlue,
                         fontWeight: FontWeight.bold,
@@ -66,6 +67,7 @@ class _BasescreensState extends State<Basescreens> {
                     indicatorColor: ColorPath.deepBlue,
                     // ইন্ডিকেটরের রঙ
                     indicatorWeight: 3.0,
+                    physics: NeverScrollableScrollPhysics(),
                     tabs: [
                       Tab(icon: Icon(Icons.home_outlined)),
                       Tab(icon: Icon(Icons.explore_outlined)),
@@ -78,6 +80,7 @@ class _BasescreensState extends State<Basescreens> {
                 ),
                 Expanded(
                   child: TabBarView(
+                    physics: NeverScrollableScrollPhysics(),
                     children: [
                       FeedScreen(),
                       Text("SCreens 2"),
