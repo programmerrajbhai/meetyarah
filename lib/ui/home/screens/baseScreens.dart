@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:meetyarah/assetsPath/image_url.dart';
 import 'package:meetyarah/assetsPath/textColors.dart';
 import 'package:meetyarah/ui/home/screens/feed_screen.dart';
@@ -27,10 +28,10 @@ class _BasescreensState extends State<Basescreens> {
                   children: [
                     Text(
                       "FACEBOOK",
-                      style: TextStyle(
+                      style: GoogleFonts.bebasNeue(  // ✅ font name
+                        fontSize: 30,
                         color: ColorPath.deepBlue,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 35,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                     Spacer(),

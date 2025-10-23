@@ -85,7 +85,7 @@ class _FeedScreenState extends State<FeedScreen> {
                             ],
                           ),
                         ),
-                          ...List.generate(30, (index) {
+                        ...List.generate(30, (index) {
                           return Container(
                             width: 150,
                             height: 200,
@@ -202,12 +202,12 @@ class _FeedScreenState extends State<FeedScreen> {
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
                                 border: Border.all(
-                                  color: Colors.blue, // বর্ডারের রঙ
+                                  color: Colors.black , // বর্ডারের রঙ
                                   width: 1, // বর্ডারের পুরুত্ব
                                 ),
                               ),
                               child: CircleAvatar(
-                                radius: 10,
+                                radius: 5,
                                 backgroundImage: AssetImage(ImagePath.two_dot),
                               ),
                             ),
@@ -260,16 +260,18 @@ class _FeedScreenState extends State<FeedScreen> {
                                     CircleAvatar(
                                       child: IconButton(
                                         onPressed: () {},
-                                        icon: Icon(Icons.heart_broken_outlined,size: 15,),
+                                        icon: Icon(
+                                          Icons.heart_broken_outlined,
+                                          size: 15,
+                                        ),
                                       ),
                                     ),
                                     SizedBox(width: 5),
                                     Text(
                                       "100k+ ",
                                       style: TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 14
-
+                                        color: Colors.black,
+                                        fontSize: 14,
                                       ),
                                     ),
                                   ],
@@ -291,16 +293,15 @@ class _FeedScreenState extends State<FeedScreen> {
                                     CircleAvatar(
                                       child: IconButton(
                                         onPressed: () {},
-                                        icon: Icon(Icons.comment,size: 15,),
+                                        icon: Icon(Icons.comment, size: 15),
                                       ),
                                     ),
                                     SizedBox(width: 5),
                                     Text(
                                       "40k+ ",
                                       style: TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 14
-
+                                        color: Colors.black,
+                                        fontSize: 14,
                                       ),
                                     ),
                                   ],
@@ -322,7 +323,7 @@ class _FeedScreenState extends State<FeedScreen> {
                                     CircleAvatar(
                                       child: IconButton(
                                         onPressed: () {},
-                                        icon: Icon(Icons.share,size: 15,),
+                                        icon: Icon(Icons.share, size: 15),
                                       ),
                                     ),
                                     SizedBox(width: 5),
@@ -330,8 +331,7 @@ class _FeedScreenState extends State<FeedScreen> {
                                       "30k+ ",
                                       style: TextStyle(
                                         color: Colors.black,
-                                        fontSize: 14
-
+                                        fontSize: 14,
                                       ),
                                     ),
                                   ],
@@ -341,7 +341,6 @@ class _FeedScreenState extends State<FeedScreen> {
                           ],
                         ),
                         SizedBox(height: 15),
-
                       ],
                     );
                   },
