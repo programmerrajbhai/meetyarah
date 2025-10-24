@@ -36,6 +36,9 @@ dependencies:
   cupertino_icons: ^1.0.8
   get:
   google_fonts:
+  font_awesome_flutter:
+
+  video_player:
 
 dev_dependencies:
   flutter_test:

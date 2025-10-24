@@ -149,6 +149,7 @@ class _FeedScreenState extends State<FeedScreen> {
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.start,
@@ -183,7 +184,7 @@ class _FeedScreenState extends State<FeedScreen> {
                                   style: TextStyle(
                                     color: Colors.black,
                                     fontSize: 15,
-                                    fontWeight: FontWeight.bold,
+                                    fontWeight: FontWeight.w500,
                                   ),
                                 ),
 
@@ -341,6 +342,7 @@ class _FeedScreenState extends State<FeedScreen> {
                           ],
                         ),
                         SizedBox(height: 15),
+
                       ],
                     );
                   },
