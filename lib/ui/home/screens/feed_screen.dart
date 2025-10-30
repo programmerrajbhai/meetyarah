@@ -55,7 +55,7 @@ class _FeedScreenState extends State<FeedScreen> {
                                   top: Radius.circular(16),
                                 ),
                                 child: Image.network(
-                                  "https://images.pexels.com/photos/1040881/pexels-photo-1040881.jpeg",
+                                  "https://scontent.fdac179-1.fna.fbcdn.net/v/t39.30808-6/567677708_788823450696325_5639549844313816125_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeHH_0pUcly0NO-JWLs3TN4RRpilTbjywadGmKVNuPLBp3KC177Yr7gvJqHvML4mSvd9Tin2vJkLJ71pLr5JysTs&_nc_ohc=0WcSrHaCjPgQ7kNvwFqm4a_&_nc_oc=AdkHOqa2oPZQ1cUVh5SPp25vr6JYq6GfNGecGSrMi0Kk1LA6__cXocL_eEqmHg0yeBk&_nc_zt=23&_nc_ht=scontent.fdac179-1.fna&_nc_gid=YgzxjqSoJiRyR8gWHyktMA&oh=00_AffLG1W_SD6jkyrNCpOg1_OwO_aHtYNf5QL93dXHm6S6WQ&oe=690803AF",
                                   height: 130,
                                   width: double.infinity,
                                   fit: BoxFit.cover,

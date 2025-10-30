@@ -37,7 +37,7 @@ dependencies:
   get:
   google_fonts:
   font_awesome_flutter:
-
+  image_picker:
   video_player:
 
 dev_dependencies:

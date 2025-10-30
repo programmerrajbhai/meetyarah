@@ -3,6 +3,8 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:meetyarah/assetsPath/image_url.dart';
 import 'package:meetyarah/assetsPath/textColors.dart';
+import 'package:meetyarah/ui/create_post/screens/create_post.dart';
+import 'package:meetyarah/ui/dashboard/screens/dashboard_screens.dart';
 import 'package:meetyarah/ui/home/screens/feed_screen.dart';
 
 import '../../reels/screens/reel_screens.dart';
@@ -29,7 +31,7 @@ class _BasescreensState extends State<Basescreens> {
                     width: 10,
                   ),
                   Text(
-                    "FACEBOOK",
+                    "MEET YARAH",
                     style: GoogleFonts.bebasNeue(  // ✅ font name
                       fontSize: 30,
                       color: ColorPath.deepBlue,
@@ -72,8 +74,7 @@ class _BasescreensState extends State<Basescreens> {
                     Tab(icon: Icon(Icons.home_outlined,size: 24,)),
                     Tab(icon: Icon(Icons.play_circle_fill,size: 24)),
                     Tab(icon: Icon(Icons.add_box_outlined,size: 24)),
-                    Tab(icon: Icon(Icons.person_outline,size: 24)),
-                    Tab(icon: Icon(Icons.insights,size: 24)),
+                    Tab(icon: Icon(Icons.dashboard_sharp,size: 24)),
                     Tab(icon: Icon(Icons.apps,size: 24)),
                   ],
                 ),
@@ -84,9 +85,8 @@ class _BasescreensState extends State<Basescreens> {
                   children: [
                     FeedScreen(),
                     ReelScreens(),
-                    Text("SCreens 3"),
-                    Text("SCreens 4"),
-                    Text("SCreens 5"),
+                    CreatePostScreen(),
+                    ActivityDashboardScreen(),
                     Text("SCreens 6"),
                   ],
                 ),
