@@ -287,7 +287,7 @@ class _ActivityDashboardScreenState extends State<ActivityDashboardScreen> {
     );
   }
 
-  // একটি অ্যাক্টিভিটি আইটেমের ডিজাইন
+  // একট
   Widget _buildActivityTile(RecentActivity activity) {
     return ListTile(
       leading: CircleAvatar(
