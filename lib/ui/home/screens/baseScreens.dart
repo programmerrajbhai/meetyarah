@@ -6,6 +6,7 @@ import 'package:meetyarah/assetsPath/textColors.dart';
 import 'package:meetyarah/ui/create_post/screens/create_post.dart';
 import 'package:meetyarah/ui/dashboard/screens/dashboard_screens.dart';
 import 'package:meetyarah/ui/home/screens/feed_screen.dart';
+import 'package:meetyarah/ui/menu_list/screens/menu_item_screens.dart';
 
 import '../../reels/screens/reel_screens.dart';
 
@@ -87,7 +88,7 @@ class _BasescreensState extends State<Basescreens> {
                     ReelScreens(),
                     CreatePostScreen(),
                     ActivityDashboardScreen(),
-                    Text("SCreens 6"),
+                    MenuScreen()
                   ],
                 ),
               ),
