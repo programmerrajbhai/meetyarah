@@ -44,7 +44,7 @@ class _ForgotScreensState extends State<ForgotScreens> {
               SizedBox(height: 30,),
               textfromfield(
                 text: "Enter your email",
-                icon: Icons.email,
+                icon: Icons.email, controller: null,
               ),
               SizedBox(height: 40),
 

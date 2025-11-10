@@ -25,7 +25,7 @@ class networkClient {
       if (response.statusCode == 200) {
         final decodedJson = jsonDecode(response.body);
         return networkResponse(
-          isSuccess: false,
+          isSuccess: true,
           data: decodedJson,
           statusCode: response.statusCode,
         );
@@ -52,9 +52,9 @@ class networkClient {
     try {
       Uri uri = Uri.parse(url);
       Response response = await post(
-        uri,
-        headers: {"Content-type": "Application/json"},
-        body: jsonEncode(body),
+          uri,
+          headers: {"Content-Type": "application/json"},
+          body: jsonEncode(body),
       );
 
       if (response.statusCode == 200) {

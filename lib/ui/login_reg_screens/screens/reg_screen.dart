@@ -2,6 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:meetyarah/assetsPath/image_url.dart';
+import 'package:meetyarah/ui/login_reg_screens/controllers/registrationController.dart';
 import 'package:meetyarah/ui/login_reg_screens/screens/login_screen.dart';
 
 import '../../../assetsPath/textColors.dart';
@@ -16,6 +17,8 @@ class RegistrationScreens extends StatefulWidget {
 }
 
 class _RegistrationScreensState extends State<RegistrationScreens> {
+  final _regcontroller = Get.put(RegistrationController());
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,35 +30,55 @@ class _RegistrationScreensState extends State<RegistrationScreens> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Image.asset(ImagePath.appLogotransparent,
-                height: Get.height *0.38,
-                width: Get.width *1,
-             ),
-              textfromfield(icon: Icons.account_box, text: 'First Name'),
+              Image.asset(
+                ImagePath.appLogotransparent,
+                height: Get.height * 0.38,
+                width: Get.width * 1,
+              ),
+              textfromfield(
+                icon: Icons.account_box,
+                text: 'First Name',
+                controller: _regcontroller.firstnameCtrl,
+              ),
               SizedBox(height: 8),
-              textfromfield(icon: Icons.account_box, text: 'Last Name'),
+              textfromfield(
+                icon: Icons.account_box,
+                text: 'Last Name',
+                controller: _regcontroller.lastnameCtrl,
+              ),
               SizedBox(height: 8),
-              textfromfield(icon: Icons.email, text: 'Email Address'),
+              textfromfield(
+                icon: Icons.email,
+                text: 'Email Address',
+                controller: _regcontroller.emailCtrl,
+              ),
               SizedBox(height: 8),
-              textfromfield(icon: Icons.lock, text: 'Password'),
+              textfromfield(
+                icon: Icons.lock,
+                text: 'Password',
+                controller: _regcontroller.passwordCtrl,
+              ),
               SizedBox(height: 8),
 
               SizedBox(height: 16),
               containnerBox(
+                onTap: () {
+                  _regcontroller.RegisterUser();
+                },
                 bgColors: ColorPath.deepBlue,
                 text: "Registration",
                 textColors: Colors.white,
               ),
               SizedBox(height: 14),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 10.0),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 25.0,
+                  vertical: 10.0,
+                ),
                 child: Row(
                   children: <Widget>[
                     Expanded(
-                      child: Divider(
-                        thickness: 1,
-                        color: Colors.grey[400],
-                      ),
+                      child: Divider(thickness: 1, color: Colors.grey[400]),
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 10.0),
@@ -65,10 +88,7 @@ class _RegistrationScreensState extends State<RegistrationScreens> {
                       ),
                     ),
                     Expanded(
-                      child: Divider(
-                        thickness: 1,
-                        color: Colors.grey[400],
-                      ),
+                      child: Divider(thickness: 1, color: Colors.grey[400]),
                     ),
                   ],
                 ),
@@ -94,9 +114,10 @@ class _RegistrationScreensState extends State<RegistrationScreens> {
                           fontWeight: FontWeight.bold,
                           decoration: TextDecoration.underline,
                         ),
-                        recognizer: TapGestureRecognizer()..onTap = () {
-                          Get.to(LoginScreen());
-                        },
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            Get.to(LoginScreen());
+                          },
                       ),
                     ],
                   ),

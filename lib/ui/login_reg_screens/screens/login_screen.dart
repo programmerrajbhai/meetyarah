@@ -33,10 +33,10 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               textfromfield(
                 icon: Icons.account_box,
-                text: 'Email or Phone Number',
+                text: 'Email or Phone Number', controller: null,
               ),
               SizedBox(height: 8),
-              textfromfield(icon: Icons.lock, text: 'Password'),
+              textfromfield(icon: Icons.lock, text: 'Password', controller: null,),
               TextButton(
                 onPressed: () {
                   Get.to(ForgotScreens());
