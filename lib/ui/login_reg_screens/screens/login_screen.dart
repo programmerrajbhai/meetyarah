@@ -4,18 +4,22 @@ import 'package:get/get.dart';
 import 'package:meetyarah/assetsPath/image_url.dart';
 import 'package:meetyarah/assetsPath/textColors.dart';
 import 'package:meetyarah/ui/home/screens/baseScreens.dart';
+import 'package:meetyarah/ui/login_reg_screens/controllers/loginController.dart';
 import 'package:meetyarah/ui/login_reg_screens/screens/forget_screen.dart';
 import 'package:meetyarah/ui/login_reg_screens/screens/reg_screen.dart';
 import '../widgets/Textfromfield.dart';
 import '../widgets/containnerBox.dart';
-
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
+
 class _LoginScreenState extends State<LoginScreen> {
+
+  final loginController= Get.put(LoginController());
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,16 +31,22 @@ class _LoginScreenState extends State<LoginScreen> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Image.asset(ImagePath.appLogotransparent,
-              width: Get.width * 1,
-              height: Get.height * 0.35,
+              Image.asset(
+                ImagePath.appLogotransparent,
+                width: Get.width * 1,
+                height: Get.height * 0.35,
               ),
               textfromfield(
                 icon: Icons.account_box,
-                text: 'Email or Phone Number', controller: null,
+                text: 'Email or Phone Number',
+                controller:loginController.emailOrPhoneCtrl,
               ),
               SizedBox(height: 8),
-              textfromfield(icon: Icons.lock, text: 'Password', controller: null,),
+              textfromfield(
+                icon: Icons.lock,
+                text: 'Password',
+                controller: loginController.passwordCtrl,
+              ),
               TextButton(
                 onPressed: () {
                   Get.to(ForgotScreens());
@@ -48,8 +58,8 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               SizedBox(height: 16),
               InkWell(
-                onTap: (){
-                  Get.to(Basescreens());
+                onTap: () {
+                  loginController.LoginUser();
                 },
                 child: containnerBox(
                   bgColors: ColorPath.deepBlue,
@@ -59,14 +69,14 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               SizedBox(height: 14),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 10.0),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 25.0,
+                  vertical: 10.0,
+                ),
                 child: Row(
                   children: <Widget>[
                     Expanded(
-                      child: Divider(
-                        thickness: 1,
-                        color: Colors.grey[400],
-                      ),
+                      child: Divider(thickness: 1, color: Colors.grey[400]),
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 10.0),
@@ -76,10 +86,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                     Expanded(
-                      child: Divider(
-                        thickness: 1,
-                        color: Colors.grey[400],
-                      ),
+                      child: Divider(thickness: 1, color: Colors.grey[400]),
                     ),
                   ],
                 ),
@@ -107,8 +114,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         recognizer: TapGestureRecognizer()
                           ..onTap = () {
-                         Get.to(RegistrationScreens());
-                              },
+                            Get.to(RegistrationScreens());
+                          },
                       ),
                     ],
                   ),
@@ -121,4 +128,3 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
-
