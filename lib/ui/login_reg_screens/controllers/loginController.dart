@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:meetyarah/data/clients/service.dart';
+import 'package:meetyarah/ui/home/screens/baseScreens.dart';
 
 import '../../../data/utils/urls.dart';
 
@@ -8,14 +9,11 @@ class LoginController extends GetxController {
   final emailOrPhoneCtrl = TextEditingController();
   final passwordCtrl = TextEditingController();
 
-
   void LoginUser() async {
-
     String email = emailOrPhoneCtrl.text.trim();
     String password = passwordCtrl.text.trim();
 
-    if (email.isEmpty &&
-        password.isEmpty) {
+    if (email.isEmpty && password.isEmpty) {
       Get.snackbar(
         'Error!',
         "Please enter all fields",
@@ -28,27 +26,28 @@ class LoginController extends GetxController {
       };
 
       networkResponse response = await networkClient.postRequest(
-        url: Urls.registerApi,
+        url: Urls.loginApi,
         body: responseBody,
       );
 
-      if(response.statusCode== 200){
+      if (response.statusCode == 200) {
         Get.snackbar(
           'Success',
           "Login Successfully Done!",
           snackPosition: SnackPosition.BOTTOM,
-        );l
-      }else{
+        );
+        Get.to(Basescreens());
+
+      } else {
         Get.snackbar(
           'faild',
           "Something went wrong!",
           snackPosition: SnackPosition.BOTTOM,
         );
       }
-
-
     }
-
-
   }
+
+
+
 }
