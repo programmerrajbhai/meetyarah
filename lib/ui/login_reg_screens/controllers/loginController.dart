@@ -2,6 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:meetyarah/data/clients/service.dart';
 import 'package:meetyarah/ui/home/screens/baseScreens.dart';
+import 'package:meetyarah/ui/login_reg_screens/controllers/auth_controller.dart';
+import 'package:meetyarah/ui/login_reg_screens/model/login_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../data/utils/urls.dart';
 
@@ -31,6 +34,15 @@ class LoginController extends GetxController {
       );
 
       if (response.statusCode == 200) {
+
+        LoginModel loginModel= LoginModel.fromJson(response.data! );
+        // TODO: save token to local storage
+        AuthController.saveUserInformation(loginModel.token, loginModel.userModel);
+
+
+
+
+
         Get.snackbar(
           'Success',
           "Login Successfully Done!",
