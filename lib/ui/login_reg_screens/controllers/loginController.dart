@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:meetyarah/data/clients/service.dart';
 import 'package:meetyarah/ui/home/screens/baseScreens.dart';
@@ -12,7 +13,7 @@ class LoginController extends GetxController {
   final emailOrPhoneCtrl = TextEditingController();
   final passwordCtrl = TextEditingController();
 
-  void LoginUser() async {
+  void LoginUser(BuildContext context) async {
     String email = emailOrPhoneCtrl.text.trim();
     String password = passwordCtrl.text.trim();
 
@@ -37,18 +38,19 @@ class LoginController extends GetxController {
 
         LoginModel loginModel= LoginModel.fromJson(response.data! );
         // TODO: save token to local storage
-        AuthController.saveUserInformation(loginModel.token, loginModel.userModel);
-
-
-
-
-
+         await AuthController.saveUserInformation(loginModel.token, loginModel.userModel);
         Get.snackbar(
           'Success',
           "Login Successfully Done!",
           snackPosition: SnackPosition.BOTTOM,
         );
-        Get.to(Basescreens());
+
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+                builder:( context) => const Basescreens()),
+            (predicate)=> false);
+
 
       } else {
         Get.snackbar(

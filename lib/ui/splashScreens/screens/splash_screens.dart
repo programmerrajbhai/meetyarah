@@ -21,7 +21,8 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> _navigate() async {
-    await Future.delayed(const Duration(seconds: 2)); // splash delay
+    await Future.delayed(const Duration(seconds: 2)); // splash delay\
+
     final bool isLoggedIn= await AuthController.checkUserLoggedIn();
 
     if(isLoggedIn== true){
