@@ -5,7 +5,7 @@ import 'package:http/http.dart';
 class networkResponse {
   final bool isSuccess;
   final int statusCode;
-  final Map<String, dynamic>? data;
+  final dynamic data;
   final String? errorMessage;
 
   networkResponse({
@@ -14,6 +14,7 @@ class networkResponse {
     this.data,
     this.errorMessage,
   });
+
 }
 
 class networkClient {
@@ -52,9 +53,9 @@ class networkClient {
     try {
       Uri uri = Uri.parse(url);
       Response response = await post(
-          uri,
-          headers: {"Content-Type": "application/json"},
-          body: jsonEncode(body),
+        uri,
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode(body),
       );
 
       if (response.statusCode == 200) {
