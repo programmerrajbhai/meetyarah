@@ -59,7 +59,7 @@ class _LoginScreenState extends State<LoginScreen> {
               SizedBox(height: 16),
               InkWell(
                 onTap: () {
-                  loginController.LoginUser(context);
+                  loginController.LoginUser();
                 },
                 child: containnerBox(
                   bgColors: ColorPath.deepBlue,

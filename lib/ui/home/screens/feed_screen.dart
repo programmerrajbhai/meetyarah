@@ -86,7 +86,7 @@ class _FeedScreenState extends State<FeedScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      post.username ?? "Unknown User",
+                                      post.full_name ?? "Unknown User",
                                       style: const TextStyle(
                                           fontSize: 16,
                                           fontWeight: FontWeight.bold
