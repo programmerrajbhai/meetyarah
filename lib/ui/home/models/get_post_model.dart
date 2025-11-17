@@ -3,7 +3,7 @@ class GetPostModel {
   String? post_content;
   String? image_url;
   String? created_at;
-  String? user_id;
+  int? user_id;
   String? username;
   String? full_name;
   String? profile_picture_url;
@@ -25,16 +25,29 @@ class GetPostModel {
 
   factory GetPostModel.fromJson(Map<String, dynamic> json) {
     return GetPostModel(
-      post_id: json['post_id'],
-      post_content: json['post_content'],
-      image_url: json['image_url'],
-      created_at: json['created_at'],
-      user_id: json['user_id'],
-      username: json['username'],
-      full_name: json['full_name'],
-      profile_picture_url: json['profile_picture_url'],
-      like_count: json['like_count'],
-      comment_count: json['comment_count'],
+      post_id: json['post_id']?.toString(),
+      post_content: json['post_content']?.toString(),
+      image_url: json['image_url']?.toString(),
+      created_at: json['created_at']?.toString(),
+      user_id: _toInt(json['user_id']),
+      username: json['username']?.toString(),
+      full_name: json['full_name']?.toString(),
+      profile_picture_url: json['profile_picture_url']?.toString(),
+      like_count: _toInt(json['like_count']),
+      comment_count: _toInt(json['comment_count']),
     );
+  }
+
+  // -------- Safe Parser --------
+  static int? _toInt(dynamic value) {
+    if (value == null) return null;
+
+    if (value is int) return value;
+
+    if (value is String) {
+      return int.tryParse(value);
+    }
+
+    return null; // unexpected type
   }
 }
