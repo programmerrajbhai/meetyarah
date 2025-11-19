@@ -1,53 +1,71 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:meetyarah/data/clients/service.dart';
-
 import '../../../data/utils/urls.dart';
 import '../../home/controllers/get_post_controllers.dart';
+import '../../login_reg_screens/controllers/auth_controller.dart';
 import '../models/comments_model.dart';
 
 class CommentController extends GetxController {
-  // PostDetailPage থেকে postId রিসিভ করার জন্য
   final int postId;
   CommentController({required this.postId});
 
   var isLoading = false.obs;
-  var comments = <CommentModel>[].obs; // কমেন্টের রি-অ্যাক্টিভ লিস্ট
+  var comments = <CommentModel>[].obs;
   final TextEditingController commentTextController = TextEditingController();
 
-  // PostController-কে খুঁজে নিই, যেন কমেন্ট কাউন্ট আপডেট করতে পারি
+  final AuthService _authService = Get.find<AuthService>();
   final GetPostController _postController = Get.find<GetPostController>();
 
   @override
   void onInit() {
     super.onInit();
-    fetchComments(); // পেজ চালু হওয়ামাত্রই কমেন্ট লোড করি
+    print("🔹 CommentController Init: PostID = $postId"); // 1. আইডি ঠিক আছে কি না
+    fetchComments();
   }
 
-  // API থেকে সব কমেন্ট লোড করার ফাংশন
   Future<void> fetchComments() async {
     try {
       isLoading(true);
-      networkResponse response = await networkClient.getRequest(
-        // get_comments.php-কে post_id পাঠাই
-        url: "${Urls.getCommentsApi}?post_id=$postId",
-      );
+
+      String url = "${Urls.getCommentsApi}?post_id=$postId";
+      print("🔹 API URL: $url"); // 2. ইউআরএল ঠিক আছে কি না
+
+      networkResponse response = await networkClient.getRequest(url: url);
+
+      print("🔹 Status Code: ${response.statusCode}"); // 3. সার্ভার রেসপন্স কোড
+      print("🔹 Response Body: ${response.data}"); // 4. সার্ভার কী ডেটা পাঠাচ্ছে
+
       if (response.isSuccess && response.data?['status'] == 'success') {
         List<dynamic> data = response.data!['comments'];
+
+        if (data.isEmpty) {
+          print("🔸 Warning: Comment list is empty from server.");
+        }
+
         comments.value = data.map((json) => CommentModel.fromJson(json)).toList();
+        print("✅ Comments Loaded: ${comments.length}");
+      } else {
+        print("❌ API Error Message: ${response.errorMessage}");
       }
+    } catch (e) {
+      print("❌ Exception in fetchComments: $e"); // 5. কোডে কোনো ক্র্যাশ হচ্ছে কি না
     } finally {
       isLoading(false);
     }
   }
 
-  // নতুন কমেন্ট যোগ করার ফাংশন
   Future<void> addComment() async {
-    final text = commentTextController.text;
+    final text = commentTextController.text.trim();
     if (text.isEmpty) return;
 
+    final int? myUserId = _authService.userId;
+    if (myUserId == null) {
+      Get.snackbar("Error", "Please login again.");
+      return;
+    }
+
     try {
-      // API-তে কল পাঠানোর আগে UI থেকে টেক্সট ক্লিয়ার করি এবং কি-বোর্ড হাইড করি
       commentTextController.clear();
       FocusScope.of(Get.context!).unfocus();
 
@@ -55,23 +73,26 @@ class CommentController extends GetxController {
         url: Urls.addCommentApi,
         body: {
           'post_id': postId,
+          'user_id': myUserId,
           'comment_text': text,
-          // 'user_id' টোকেন থেকে আসবে, তাই পাঠানোর দরকার নেই
         },
       );
 
       if (response.isSuccess && response.data?['status'] == 'success') {
-        // কমেন্ট যোগ সফল হলে, কমেন্ট লিস্ট রিফ্রেশ করি
-        await fetchComments();
+        print("✅ Comment Added Success");
+        await fetchComments(); // রিফ্রেশ
 
-        // এবং হোম পেজের পোস্টের কমেন্ট কাউন্ট +১ করি
-        // এটি একটি ভালো প্র্যাকটিস, যেন হোম পেজে ফেরত গেলে কাউন্ট ঠিক থাকে
-        _postController.posts.firstWhere((p) => p.post_content == postId).comment_count;
-        _postController.posts.refresh();
+        // আপডেট কমেন্ট কাউন্ট
+        // _postController.posts.firstWhere((p) => p.post_id == postId.toString()).comment_count;
+        // (উপরের লাইনে একটু লজিক ফিক্স দরকার হতে পারে আপনার মডেল অনুযায়ী)
+
+        Get.snackbar('Success', 'Comment added!');
       } else {
+        print("❌ Add Comment Failed: ${response.data}");
         Get.snackbar('Error', 'Failed to add comment.');
       }
     } catch (e) {
+      print("❌ Exception Add Comment: $e");
       Get.snackbar('Error', e.toString());
     }
   }

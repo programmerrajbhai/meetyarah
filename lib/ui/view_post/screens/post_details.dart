@@ -9,22 +9,24 @@ import '../widgets/post_card.dart';
 class PostDetailPage extends StatelessWidget {
   final GetPostModel post;
 
-  PostDetailPage({super.key, required this.post});
+  const PostDetailPage({super.key, required this.post});
 
   @override
   Widget build(BuildContext context) {
-    CommentController controller = Get.put(
-      CommentController(postId: post.user_id ?? 0),
+
+    int postId = int.tryParse(post.post_id.toString()) ?? 0;
+
+    final CommentController controller = Get.put(
+      CommentController(postId: postId),
+      tag: postId.toString(),
     );
 
     const Color darkBlue = Color(0xFF1B1B3C);
     const Color mediumBlue = Color(0xFF2A2A4A);
 
     return Scaffold(
-      backgroundColor: darkBlue,
       appBar: AppBar(
         title: Text(post.full_name ?? "Unknown User"),
-        backgroundColor: mediumBlue,
         elevation: 0,
       ),
       body: Column(
@@ -39,19 +41,21 @@ class PostDetailPage extends StatelessWidget {
           Expanded(
             child: Obx(() {
               if (controller.isLoading.value) {
-                return Center(child: CircularProgressIndicator());
+                return const Center(child: CircularProgressIndicator());
               }
+
+              // যদি কোনো কমেন্ট না থাকে
               if (controller.comments.isEmpty) {
-                return Center(
+                return const Center(
                   child: Text(
-                    "No comments yet.",
+                    "No comments yet. Be the first to comment!",
                     style: TextStyle(color: Colors.white54),
                   ),
                 );
               }
 
               return ListView.builder(
-                padding: EdgeInsets.symmetric(horizontal: 16),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
                 itemCount: controller.comments.length,
                 itemBuilder: (context, index) {
                   final CommentModel comment = controller.comments[index];
@@ -68,10 +72,10 @@ class PostDetailPage extends StatelessWidget {
                                 'https://i.pravatar.cc/150?img=5',
                           ),
                         ),
-                        SizedBox(width: 10),
+                        const SizedBox(width: 10),
                         Expanded(
                           child: Container(
-                            padding: EdgeInsets.all(12),
+                            padding: const EdgeInsets.all(12),
                             decoration: BoxDecoration(
                               color: mediumBlue,
                               borderRadius: BorderRadius.circular(12),
@@ -81,14 +85,14 @@ class PostDetailPage extends StatelessWidget {
                               children: [
                                 Text(
                                   comment.fullName,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold),
                                 ),
-                                SizedBox(height: 4),
+                                const SizedBox(height: 4),
                                 Text(
                                   comment.commentText,
-                                  style: TextStyle(color: Colors.white70),
+                                  style: const TextStyle(color: Colors.white70),
                                 ),
                               ],
                             ),
@@ -127,8 +131,8 @@ class PostDetailPage extends StatelessWidget {
           Expanded(
             child: TextField(
               controller: controller.commentTextController,
-              style: TextStyle(color: Colors.white),
-              decoration: InputDecoration(
+              style: const TextStyle(color: Colors.white),
+              decoration: const InputDecoration(
                 hintText: 'Add a comment...',
                 hintStyle: TextStyle(color: Colors.white54),
                 border: InputBorder.none,
@@ -136,7 +140,7 @@ class PostDetailPage extends StatelessWidget {
             ),
           ),
           IconButton(
-            icon: Icon(Icons.send, color: Colors.blueAccent),
+            icon: const Icon(Icons.send, color: Colors.blueAccent),
             onPressed: controller.addComment,
           )
         ],

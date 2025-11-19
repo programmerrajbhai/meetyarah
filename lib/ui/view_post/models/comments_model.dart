@@ -4,14 +4,14 @@ class CommentModel {
   final String createdAt;
   final int userId;
   final String username;
-  final String like_count;
-  final String comment_count;
   final String fullName;
-  final String? profilePictureUrl; // Eti null hote pare
+  final String? profilePictureUrl;
 
-  CommentModel( {
-    required this.like_count,
-    required this.comment_count,
+  // এগুলো যদি API থেকে না আসে, তবে অপশনাল রাখুন
+  final String? like_count;
+  final String? comment_count;
+
+  CommentModel({
     required this.commentId,
     required this.commentText,
     required this.createdAt,
@@ -19,22 +19,23 @@ class CommentModel {
     required this.username,
     required this.fullName,
     this.profilePictureUrl,
-
+    this.like_count,
+    this.comment_count,
   });
 
-  // API theke asa JSON map-ke CommentModel object-e porinoto korbe
   factory CommentModel.fromJson(Map<String, dynamic> json) {
     return CommentModel(
-      commentId: int.parse(json['comment_id'].toString()),
-      commentText: json['comment_text'],
-      createdAt: json['created_at'],
-      userId: int.parse(json['user_id'].toString()),
-      username: json['username'],
-      fullName: json['full_name'],
+      // .toString() ব্যবহার করা নিরাপদ
+      commentId: int.tryParse(json['comment_id'].toString()) ?? 0,
+      commentText: json['comment_text']?.toString() ?? "",
+      createdAt: json['created_at']?.toString() ?? "",
+      userId: int.tryParse(json['user_id'].toString()) ?? 0,
+      username: json['username']?.toString() ?? "Unknown",
+      fullName: json['full_name']?.toString() ?? "Unknown",
       profilePictureUrl: json['profile_picture_url'],
 
-      like_count: json['like_count'],
-      comment_count: json['comment_count'],
+      like_count: json['like_count']?.toString(),
+      comment_count: json['comment_count']?.toString(),
     );
   }
 }
