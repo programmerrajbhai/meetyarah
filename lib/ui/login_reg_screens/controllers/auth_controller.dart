@@ -1,113 +1,38 @@
-// import 'dart:convert';
-//
-// import 'package:meetyarah/ui/login_reg_screens/model/user_model.dart';
-// import 'package:shared_preferences/shared_preferences.dart';
-//
-// class AuthController {
-//   static String? token;
-//   static UserModel? userModel;
-//   static String _tokenKey = 'token';
-//   static String _userDataKey = 'user-data';
-//
-//   //Sae user Information
-//   static Future<void> saveUserInformation(
-//     String accessToken,
-//     UserModel userModel,
-//   ) async {
-//     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-//     sharedPreferences.setString(_tokenKey, accessToken);
-//     sharedPreferences.setString(_userDataKey, jsonEncode({userModel.toJson()}));
-//     token = accessToken;
-//     userModel = userModel;
-//   }
-//
-//   //get user information
-//   static Future<void> getUserInformation() async {
-//     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-//     String? accessToken = sharedPreferences.getString(_tokenKey);
-//     String? saveUserModelString = sharedPreferences.getString(_userDataKey);
-//
-//     if (saveUserModelString != null) {
-//       UserModel savedUserModel = UserModel.fromJson(
-//         jsonDecode(saveUserModelString),
-//       );
-//       userModel = savedUserModel;
-//     }
-//
-//     token = accessToken;
-//   }
-//
-//   //check if user already logged in
-//   static Future<bool> checkUserLoggedIn() async {
-//     SharedPreferences sharedPreferences =await SharedPreferences.getInstance();
-//     String? userAccessToken= sharedPreferences.getString(_tokenKey);
-//
-//     if(userAccessToken!= null){
-//       await getUserInformation();
-//       return true;
-//     }else return false;
-//
-//   }
-// }
 import 'dart:convert';
-import 'package:meetyarah/ui/login_reg_screens/model/user_model.dart';
+import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:meetyarah/ui/login_reg_screens/screens/login_screen.dart'; // আপনার LoginScreen ইমপোর্ট করুন
 
-class AuthController {
-  static String? token;
-  static UserModel? userModel;
+class AuthService extends GetxService {
+  late SharedPreferences _prefs;
 
-  static const String _tokenKey = 'token';
-  static const String _userDataKey = 'user-data';
-
-  /// ✅ Save user information (token + user)
-  static Future<void> saveUserInformation(
-      String accessToken,
-      UserModel user,
-      ) async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    await prefs.setString(_tokenKey, accessToken);
-    await prefs.setString(_userDataKey, jsonEncode(user.toJson()));
-
-    token = accessToken;
-    AuthController.userModel = user; // ✅ proper assignment
+  // সার্ভিস ইনিশিলাইজ করা
+  Future<AuthService> init() async {
+    _prefs = await SharedPreferences.getInstance();
+    return this;
   }
 
-  /// ✅ Get user info from SharedPreferences
-  static Future<void> getUserInformation() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    token = prefs.getString(_tokenKey);
-
-    final String? userJson = prefs.getString(_userDataKey);
-    if (userJson != null) {
-      try {
-        final Map<String, dynamic> decoded = jsonDecode(userJson);
-        AuthController.userModel = UserModel.fromJson(decoded);
-      } catch (e) {
-        print("⚠️ Failed to decode user data: $e");
-      }
-    }
+  // --- 1. লগইন সেশন সেভ করা ---
+  Future<void> saveUserSession(String token, Map<String, dynamic> userMap) async {
+    await _prefs.setString('token', token);
+    await _prefs.setString('user_data', jsonEncode(userMap)); // পুরো ইউজার ডাটা সেভ
+    await _prefs.setInt('user_id', userMap['user_id']); // কমেন্ট করার জন্য ID আলাদা সেভ করলাম
   }
 
-  /// ✅ Check if user logged in
-  static Future<bool> checkUserLoggedIn() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final String? storedToken = prefs.getString(_tokenKey);
-
-    if (storedToken != null && storedToken.isNotEmpty) {
-      await getUserInformation();
-      return true;
-    }
-    return false;
+  // --- 2. টোকেন আছে কিনা চেক করা (Auto Login এর জন্য) ---
+  bool get isLoggedIn {
+    return _prefs.getString('token') != null;
   }
 
-  /// ✅ Logout / Clear
-  static Future<void> logout() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.clear();
-    token = null;
-    userModel = null;
+  // --- 3. টোকেন গেট করা (API Call এর জন্য লাগবে) ---
+  String? get token => _prefs.getString('token');
+
+  // --- 4. ইউজার আইডি পাওয়া (কমেন্ট করার সময় লাগবে) ---
+  int? get userId => _prefs.getInt('user_id');
+
+  // --- 5. লগআউট ফাংশন ---
+  Future<void> logout() async {
+    await _prefs.clear(); // সব ডাটা মুছে ফেলবে
+    Get.offAll(() => const LoginScreen()); // লগইন পেজে পাঠিয়ে দেবে
   }
 }

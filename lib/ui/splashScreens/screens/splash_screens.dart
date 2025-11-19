@@ -1,62 +1,31 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:meetyarah/ui/home/screens/baseScreens.dart';
-import 'package:meetyarah/ui/login_reg_screens/controllers/auth_controller.dart';
-import 'package:meetyarah/ui/login_reg_screens/screens/login_screen.dart';
+import 'package:meetyarah/assetsPath/image_url.dart'; // আপনার ইমেজের পাথ
+import '../controllers/splash_controllers.dart';
 
-class SplashScreen extends StatefulWidget {
+class SplashScreen extends StatelessWidget {
   const SplashScreen({super.key});
 
   @override
-  State<SplashScreen> createState() => _SplashScreenState();
-}
-
-class _SplashScreenState extends State<SplashScreen> {
-
-  @override
-  void initState() {
-    super.initState();
-    _navigate();
-  }
-
-  Future<void> _navigate() async {
-    await Future.delayed(const Duration(seconds: 2)); // splash delay\
-
-    final bool isLoggedIn= await AuthController.checkUserLoggedIn();
-
-    if(isLoggedIn== true){
-      Get.to(Basescreens());
-    }else{
-      Get.to(LoginScreen());
-    }
-
-  }
-
-  @override
   Widget build(BuildContext context) {
+    // কন্ট্রোলার কানেক্ট করা হলো
+    Get.put(SplashController());
+
     return Scaffold(
-      backgroundColor: Colors.white, // your theme color
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // 🔷 App logo or image
+            // আপনার লোগো
             Image.asset(
-              'assets/logo.png', // replace with your logo
-              height: 100,
-              width: 100,
+              ImagePath.appLogotransparent,
+              width: Get.width * 0.6,
             ),
             const SizedBox(height: 20),
-            const Text(
-              "Welcome to MeetYarah",
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
+            // একটি লোডিং ইন্ডিকেটর (অপশনাল)
+            const CircularProgressIndicator(
+              color: Colors.indigoAccent,
             ),
-            const SizedBox(height: 10),
-            const CircularProgressIndicator(),
           ],
         ),
       ),
