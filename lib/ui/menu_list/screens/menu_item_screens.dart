@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:meetyarah/ui/profile/screens/profile_screens.dart';
 
 import '../../login_reg_screens/controllers/auth_controller.dart';
 
@@ -25,12 +26,12 @@ class MenuScreen extends StatelessWidget {
         padding: const EdgeInsets.all(12.0),
         children: [
           // --- সেকশন ১: প্রোফাইল কার্ড ---
-          _buildProfileCard(
-            context,
-            'Shahadat Hossain', // আপনার নাম
-            'See your profile', // সাবটাইটেল
-            'https://scontent.fdac179-1.fna.fbcdn.net/v/t39.30808-6/567677708_788823450696325_5639549844313816125_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeHH_0pUcly0NO-JWLs3TN4RRpilTbjywadGmKVNuPLBp3KC177Yr7gvJqHvML4mSvd9Tin2vJkLJ71pLr5JysTs&_nc_ohc=0WcSrHaCjPgQ7kNvwFqm4a_&_nc_oc=AdkHOqa2oPZQ1cUVh5SPp25vr6JYq6GfNGecGSrMi0Kk1LA6__cXocL_eEqmHg0yeBk&_nc_zt=23&_nc_ht=scontent.fdac179-1.fna&_nc_gid=YgzxjqSoJiRyR8gWHyktMA&oh=00_AffLG1W_SD6jkyrNCpOg1_OwO_aHtYNf5QL93dXHm6S6WQ&oe=690803AF',
-          ),
+         _buildProfileCard(
+              context,
+              'Shahadat Hossain', // আপনার নাম
+              'See your profile', // সাবটাইটেল
+              'https://scontent.fdac179-1.fna.fbcdn.net/v/t39.30808-6/567677708_788823450696325_5639549844313816125_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeHH_0pUcly0NO-JWLs3TN4RRpilTbjywadGmKVNuPLBp3KC177Yr7gvJqHvML4mSvd9Tin2vJkLJ71pLr5JysTs&_nc_ohc=0WcSrHaCjPgQ7kNvwFqm4a_&_nc_oc=AdkHOqa2oPZQ1cUVh5SPp25vr6JYq6GfNGecGSrMi0Kk1LA6__cXocL_eEqmHg0yeBk&_nc_zt=23&_nc_ht=scontent.fdac179-1.fna&_nc_gid=YgzxjqSoJiRyR8gWHyktMA&oh=00_AffLG1W_SD6jkyrNCpOg1_OwO_aHtYNf5QL93dXHm6S6WQ&oe=690803AF',
+            ),
           const SizedBox(height: 12),
 
           // --- সেকশন ২: শর্টকাট গ্রিড ---
@@ -63,7 +64,7 @@ class MenuScreen extends StatelessWidget {
         subtitle: Text(subtitle, style: const TextStyle(color: Colors.grey)),
         trailing: const Icon(Icons.arrow_forward_ios, size: 16),
         onTap: () {
-          // TODO: প্রোফাইল পেজে নেভিগেট করুন
+          Get.to(ProfilePage());
         },
       ),
     );
