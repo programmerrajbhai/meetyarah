@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 
-// আপনার কালার ফাইলটি import করতে পারেন, অথবা নিচের Colors.blue ব্যবহার করতে পারেন
-// import 'package:meetyarah/assetsPath/textColors.dart';
+import '../../login_reg_screens/controllers/auth_controller.dart';
 
 class MenuScreen extends StatelessWidget {
-  const MenuScreen({Key? key}) : super(key: key);
 
-  @override
+
+   MenuScreen({Key? key}) : super(key: key);
+   final AuthService authService = Get.find<AuthService>();
+
+   @override
   Widget build(BuildContext context) {
-    // ফেসবুকের মতো হালকা ধূসর ব্যাকগ্রাউন্ড
+
+
     return Scaffold(
       backgroundColor: const Color(0xFFF0F2F5),
       appBar: AppBar(
@@ -64,7 +69,7 @@ class MenuScreen extends StatelessWidget {
     );
   }
 
-  /// 2. শর্টকাট গ্রিড উইজেট
+
   Widget _buildShortcutGrid(BuildContext context) {
     // ডেমো শর্টকাট আইটেম
     final List<Map<String, dynamic>> shortcuts = [
@@ -176,7 +181,7 @@ class MenuScreen extends StatelessWidget {
           ),
         ),
         onPressed: () {
-          // TODO: লগআউট লজিক ইমপ্লিমেন্ট করুন
+          authService.logout();
         },
         child: const Text(
           'Log Out',
