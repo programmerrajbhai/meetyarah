@@ -15,8 +15,9 @@ class GetPostController extends GetxController {
 
   Future<void> getAllPost() async {
     networkResponse response = await networkClient.getRequest(
-      url: Urls.get_all_posts,
-    );
+      url: Urls.get_all_posts,);
+
+
 
     if (response.statusCode == 200 && response.data != null) {
 
