@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shimmer/shimmer.dart'; // শিমার প্যাকেজ ইমপোর্ট
 import '../controllers/get_post_controllers.dart';
-// আপনার PostDetailPage এর সঠিক পাথ ইমপোর্ট করুন
 import '../../view_post/screens/post_details.dart';
 
 class FeedScreen extends StatefulWidget {
@@ -18,160 +18,218 @@ class _FeedScreenState extends State<FeedScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Obx(() {
-          /// Loading state
-          if (postController.posts.isEmpty) {
-            return const Center(child: CircularProgressIndicator());
-          }
+        // Pull to Refresh এর জন্য RefreshIndicator ব্যবহার করা হলো
+        child: RefreshIndicator(
+          onRefresh: () async {
+            await postController.getAllPost(); // রিফ্রেশ করলে আবার ডেটা কল হবে
+          },
+          color: Colors.blue, // লোডিং আইকনের কালার
+          child: Obx(() {
+            // --- ১. লোডিং অবস্থা (Facebook Style Shimmer) ---
+            if (postController.isLoading.value) {
+              return _buildFacebookShimmerEffect();
+            }
 
-          return SingleChildScrollView(
-            child: Column(
-              children: [
-                const SizedBox(height: 10),
-                // ---------------- Story Section ----------------
-                Padding(
-                  padding: const EdgeInsets.only(left: 10),
-                  child: SizedBox(
-                    height: 200,
-                    child: ListView(
-                      scrollDirection: Axis.horizontal,
-                      children: [
-                        storyCard("Create Story", "https://picsum.photos/200"),
-                        ...List.generate(
-                          5,
-                              (i) => storyCard(
-                            "Story $i",
-                            "https://picsum.photos/30$i",
+            // --- ২. মেইন কন্টেন্ট ---
+            return SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(), // রিফ্রেশ কাজ করার জন্য এটি জরুরি
+              child: Column(
+                children: [
+                  const SizedBox(height: 10),
+                  // ---------------- Story Section ----------------
+                  Padding(
+                    padding: const EdgeInsets.only(left: 10),
+                    child: SizedBox(
+                      height: 200,
+                      child: ListView(
+                        scrollDirection: Axis.horizontal,
+                        children: [
+                          storyCard("Create Story", "https://picsum.photos/200"),
+                          ...List.generate(
+                            5,
+                                (i) => storyCard(
+                              "Story $i",
+                              "https://picsum.photos/30$i",
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
-                ),
 
-                const SizedBox(height: 15),
+                  const SizedBox(height: 15),
 
-                // ---------------- Posts Section ----------------
-                Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: postController.posts.length,
-                    itemBuilder: (context, index) {
-                      final post = postController.posts[index];
+                  // ---------------- Posts Section ----------------
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: postController.posts.length,
+                      itemBuilder: (context, index) {
+                        final post = postController.posts[index];
 
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 10,
-                          vertical: 15,
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            // User Info Row
-                            Row(
-                              children: [
-                                CircleAvatar(
-                                  radius: 25,
-                                  backgroundImage:
-                                  post.profile_picture_url != null
-                                      ? NetworkImage(post.profile_picture_url!)
-                                      : const NetworkImage(
-                                    "https://cdn-icons-png.flaticon.com/512/149/149071.png",
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 15,
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // User Info Row
+                              Row(
+                                children: [
+                                  CircleAvatar(
+                                    radius: 25,
+                                    backgroundImage: post.profile_picture_url != null
+                                        ? NetworkImage(post.profile_picture_url!)
+                                        : const NetworkImage(
+                                      "https://cdn-icons-png.flaticon.com/512/149/149071.png",
+                                    ),
+                                  ),
+                                  const SizedBox(width: 10),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        post.full_name ?? "Unknown User",
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      Text(
+                                        post.created_at ?? "",
+                                        style: const TextStyle(
+                                          color: Colors.grey,
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const Spacer(),
+                                  const Icon(Icons.more_vert),
+                                ],
+                              ),
+
+                              const SizedBox(height: 10),
+
+                              // Post Content Text
+                              if (post.post_content != null)
+                                Text(
+                                  post.post_content!,
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500,
                                   ),
                                 ),
-                                const SizedBox(width: 10),
 
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      post.full_name ?? "Unknown User",
-                                      style: const TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    Text(
-                                      post.created_at ?? "",
-                                      style: const TextStyle(
-                                        color: Colors.grey,
-                                        fontSize: 12,
-                                      ),
-                                    ),
-                                  ],
+                              const SizedBox(height: 10),
+
+                              // Post Image
+                              if (post.image_url != null)
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: Image.network(
+                                    post.image_url!,
+                                    height: 300,
+                                    width: double.infinity,
+                                    fit: BoxFit.cover,
+                                  ),
                                 ),
 
-                                const Spacer(),
-                                const Icon(Icons.more_vert),
-                              ],
-                            ),
+                              const SizedBox(height: 10),
 
-                            const SizedBox(height: 10),
-
-                            // Post Content Text
-                            if (post.post_content != null)
-                              Text(
-                                post.post_content!,
-                                style: const TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w500,
-                                ),
+                              // Likes + Comments Buttons
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  interactionButton(
+                                    Icons.favorite_border,
+                                    "${post.like_count} Likes",
+                                  ),
+                                  interactionButton(
+                                    Icons.comment,
+                                    "${post.comment_count} Comments",
+                                    onTap: () {
+                                      Get.to(() => PostDetailPage(post: post));
+                                    },
+                                  ),
+                                  interactionButton(Icons.share, "Share"),
+                                ],
                               ),
+                              const SizedBox(height: 20),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }),
+        ),
+      ),
+    );
+  }
 
-                            const SizedBox(height: 10),
-
-                            // Post Image
-                            if (post.image_url != null)
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(10),
-                                child: Image.network(
-                                  post.image_url!,
-                                  height: 300,
-                                  width: double.infinity,
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-
-                            const SizedBox(height: 10),
-
-                            // Likes + Comments Buttons
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                interactionButton(
-                                  Icons.favorite_border,
-                                  "${post.like_count} Likes",
-                                ),
-
-                                // --- Comment Button (Tap করলে Details Page এ যাবে) ---
-                                interactionButton(
-                                  Icons.comment,
-                                  "${post.comment_count} Comments",
-                                  onTap: () {
-                                    // এখানে ক্লিক করলে Details Page এ যাবে এবং বর্তমান 'post' টি সাথে নিয়ে যাবে
-                                    Get.to(() => PostDetailPage(post: post));
-                                  },
-                                ),
-                                // -----------------------------------------------------
-
-                                interactionButton(Icons.share, "Share"),
-                              ],
-                            ),
-
-                            const SizedBox(height: 20),
-                          ],
-                        ),
-                      );
-                    },
+  // --- Facebook Style Shimmer Loading Widget ---
+  Widget _buildFacebookShimmerEffect() {
+    return ListView.builder(
+      itemCount: 5, // লোডিং এর সময় কয়টা ফেইক পোস্ট দেখাবে
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Header Skeleton (Avatar + Name)
+                Row(
+                  children: [
+                    Container(
+                      width: 50,
+                      height: 50,
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(width: 120, height: 10, color: Colors.white),
+                        const SizedBox(height: 5),
+                        Container(width: 80, height: 10, color: Colors.white),
+                      ],
+                    )
+                  ],
+                ),
+                const SizedBox(height: 15),
+                // Body Text Skeleton
+                Container(width: double.infinity, height: 10, color: Colors.white),
+                const SizedBox(height: 5),
+                Container(width: double.infinity, height: 10, color: Colors.white),
+                const SizedBox(height: 10),
+                // Image Skeleton
+                Container(
+                  width: double.infinity,
+                  height: 200,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
                   ),
                 ),
               ],
             ),
-          );
-        }),
-      ),
+          ),
+        );
+      },
     );
   }
 
@@ -203,10 +261,9 @@ class _FeedScreenState extends State<FeedScreen> {
     );
   }
 
-  // আপডেট করা বাটন উইজেট (onTap প্যারামিটার সহ)
   Widget interactionButton(IconData icon, String label, {VoidCallback? onTap}) {
     return InkWell(
-      onTap: onTap, // ক্লিক ইভেন্ট
+      onTap: onTap,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Row(
