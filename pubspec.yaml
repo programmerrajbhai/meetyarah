@@ -41,6 +41,7 @@ dependencies:
   video_player:
   http:
   shared_preferences:
+  shimmer: ^3.0.0
 
 dev_dependencies:
   flutter_test:

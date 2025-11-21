@@ -6,7 +6,6 @@ import 'package:meetyarah/ui/create_post/controllers/create_post_controller.dart
 
 class CreatePostScreen extends StatefulWidget {
   const CreatePostScreen({Key? key}) : super(key: key);
-
   @override
   _CreatePostScreenState createState() => _CreatePostScreenState();
 }
