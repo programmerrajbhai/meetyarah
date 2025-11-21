@@ -1,70 +1,75 @@
 import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:meetyarah/ui/login_reg_screens/model/user_model.dart'; // আপনার UserModel ইমপোর্ট
+import 'package:meetyarah/ui/login_reg_screens/model/user_model.dart';
 import 'package:meetyarah/ui/login_reg_screens/screens/login_screen.dart';
 
 class AuthService extends GetxService {
   late SharedPreferences _prefs;
 
-  // ✅ এই লাইনটি মিসিং ছিল, এটি যোগ করুন
-  // এটি ইউজারের সব তথ্য (নাম, ছবি) রিয়েল-টাইমে ধরে রাখবে
+  // রিয়েল-টাইম ইউজার ডেটা (পুরো অ্যাপে ব্যবহার করা যাবে)
   final Rxn<UserModel> user = Rxn<UserModel>();
-
   final RxString token = ''.obs;
 
+  // অ্যাপ চালুর সময় এই ফাংশনটি কল হবে
   Future<AuthService> init() async {
     _prefs = await SharedPreferences.getInstance();
     await _loadUserSession();
     return this;
   }
 
-  // --- 1. লগইন সেশন সেভ করা ---
+  // --- ১. লগইন সেশন সেভ করা ---
   Future<void> saveUserSession(String userToken, Map<String, dynamic> userMap) async {
+    // টোকেন সেভ
     await _prefs.setString('token', userToken);
+    token.value = userToken;
 
-    // ইউজার ম্যাপ থেকে মডেল তৈরি
+    // ইউজার ডেটা সেভ (JSON String হিসেবে)
+    // UserModel.fromJson ব্যবহার করে নিশ্চিত করি ডেটা ঠিক আছে
     UserModel loggedInUser = UserModel.fromJson(userMap);
-
-    // মডেলটিকে JSON String বানিয়ে সেভ করি যাতে পরে লোড করা যায়
     await _prefs.setString('user_data', jsonEncode(loggedInUser.toJson()));
 
-    // ✅ অ্যাপের মেমোরিতে আপডেট করি (যাতে প্রোফাইল পেজ সাথে সাথে আপডেট হয়)
-    token.value = userToken;
+    // মেমোরিতে আপডেট
     user.value = loggedInUser;
+
+    print("✅ User Session Saved: ${loggedInUser.username}");
   }
 
-  // --- 2. ডাটা লোড করা (অটো লগইন) ---
+  // --- ২. অটোমেটিক লগইন চেক (অ্যাপ রিস্টার্ট হলে) ---
   Future<void> _loadUserSession() async {
     final String? savedToken = _prefs.getString('token');
     final String? savedUserData = _prefs.getString('user_data');
 
+    // যদি টোকেন এবং ডেটা থাকে, তবে মেমোরিতে লোড করি
     if (savedToken != null && savedToken.isNotEmpty) {
       token.value = savedToken;
     }
 
     if (savedUserData != null && savedUserData.isNotEmpty) {
       try {
-        // ✅ সেভ করা ডাটা থেকে আবার ইউজার মডেল তৈরি করে মেমোরিতে রাখি
         user.value = UserModel.fromJson(jsonDecode(savedUserData));
+        print("✅ User Loaded from Storage: ${user.value?.username}");
       } catch (e) {
-        print("Error loading user data: $e");
+        print("❌ Error loading user data: $e");
+        // ডাটা করাপ্ট হলে ক্লিয়ার করে দিই
+        await logout();
       }
     }
   }
 
-  // --- 3. লগআউট ---
+  // --- ৩. লগআউট ---
   Future<void> logout() async {
-    await _prefs.clear();
+    await _prefs.clear(); // সব লোকাল ডেটা মুছে ফেলি
     token.value = '';
     user.value = null;
+
+    // লগইন পেজে পাঠিয়ে দিই
     Get.offAll(() => const LoginScreen());
   }
 
-  // চেক করি ইউজার লগইন আছে কি না
+  // --- হেল্পার গেটার ---
   bool get isLoggedIn => token.value.isNotEmpty;
 
-  // শর্টকাট গেটার: ইউজার আইডি পাওয়ার জন্য
-  // আপনার UserModel এ এটি String নাকি int তা চেক করে নেবেন
+  // ইউজার আইডি পাওয়ার সহজ উপায় (String বা int যাই হোক, মডেল হ্যান্ডেল করবে)
   String? get userId => user.value?.user_id;
 }

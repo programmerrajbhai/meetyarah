@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'package:http/http.dart';
 import 'package:get/get.dart' hide Response;
+import 'package:meetyarah/ui/login_reg_screens/controllers/auth_controller.dart'; // Response নাম কনফ্লিক্ট এড়াতে
 
-import '../../ui/login_reg_screens/controllers/auth_controller.dart';
 
 class networkResponse {
   final bool isSuccess;
@@ -19,17 +19,14 @@ class networkResponse {
 }
 
 class networkClient {
-  // --- ১. টোকেন সহ হেডার তৈরি করার ফাংশন ---
+  // --- টোকেন সহ হেডার তৈরি ---
   static Map<String, String> _getHeaders() {
     final Map<String, String> headers = {
       "Content-Type": "application/json",
     };
-
     try {
-      // AuthService মেমোরিতে আছে কি না চেক করি
       if (Get.isRegistered<AuthService>()) {
         final AuthService authService = Get.find<AuthService>();
-        // টোকেন থাকলে হেডারে যোগ করি
         if (authService.token.value.isNotEmpty) {
           headers['Authorization'] = 'Bearer ${authService.token.value}';
         }
@@ -43,8 +40,6 @@ class networkClient {
   static Future<networkResponse> getRequest({required String url}) async {
     try {
       Uri uri = Uri.parse(url);
-
-      // ২. হেডার ব্যবহার করা হলো
       Response response = await get(uri, headers: _getHeaders());
 
       if (response.statusCode == 200) {
@@ -57,7 +52,7 @@ class networkClient {
       } else {
         return networkResponse(
           isSuccess: false,
-          errorMessage: "Something went wrong!",
+          errorMessage: "Something went wrong! Status: ${response.statusCode}",
           statusCode: response.statusCode,
         );
       }
@@ -76,8 +71,6 @@ class networkClient {
   }) async {
     try {
       Uri uri = Uri.parse(url);
-
-      // ৩. হেডার (টোকেন সহ) ব্যবহার করা হলো
       Response response = await post(
         uri,
         headers: _getHeaders(),
@@ -92,7 +85,6 @@ class networkClient {
           statusCode: response.statusCode,
         );
       } else {
-        // সার্ভার থেকে আসা এরর মেসেজ হ্যান্ডল করা
         String msg = "Something went wrong!";
         try {
           final decoded = jsonDecode(response.body);

@@ -1,6 +1,6 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:meetyarah/data/clients/service.dart'; // আপনার নেটওয়ার্ক ক্লায়েন্ট পাথ
+import 'package:meetyarah/data/clients/service.dart';
 import 'package:meetyarah/ui/home/screens/baseScreens.dart';
 import '../../../data/utils/urls.dart';
 import 'auth_controller.dart';
@@ -9,49 +9,82 @@ class LoginController extends GetxController {
   final emailOrPhoneCtrl = TextEditingController();
   final passwordCtrl = TextEditingController();
 
-  // AuthService খুঁজে বের করি (এটি main.dart এ ইনজেক্ট করা থাকতে হবে)
+  var isLoading = false.obs;
+
+  // AuthService খুঁজে বের করি
   final AuthService _authService = Get.find<AuthService>();
 
-  void LoginUser() async {
+  Future<void> LoginUser() async {
     String email = emailOrPhoneCtrl.text.trim();
     String password = passwordCtrl.text.trim();
 
     if (email.isEmpty || password.isEmpty) {
-      Get.snackbar('Error!', "Please enter all fields", snackPosition: SnackPosition.BOTTOM);
+      Get.snackbar(
+        'Error',
+        "Please enter both email and password",
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.redAccent,
+        colorText: Colors.white,
+      );
       return;
     }
 
-    Map<String, dynamic> requestBody = {
-      "login_identifier": email, // আপনার API অনুযায়ী key
-      "password": password,
-    };
-
     try {
-      // আপনার নেটওয়ার্ক কল (আপনার কোড অনুযায়ী)
-      var response = await networkClient.postRequest(
+      isLoading(true);
+
+      Map<String, dynamic> requestBody = {
+        "login_identifier": email,
+        "password": password,
+      };
+
+      networkResponse response = await networkClient.postRequest(
         url: Urls.loginApi,
         body: requestBody,
       );
 
-      // রেসপন্স হ্যান্ডলিং
       if (response.statusCode == 200 && response.data['status'] == 'success') {
 
         String token = response.data['token'];
         Map<String, dynamic> userData = response.data['user'];
 
-        // --- টোকেন এবং ইউজার ডাটা সেভ করা ---
+        // AuthService-এ ডাটা সেভ করি
         await _authService.saveUserSession(token, userData);
 
-        Get.snackbar('Success', "Login Successfully Done!", snackPosition: SnackPosition.BOTTOM);
+        // --- পরিবর্তন: টোকেনটি Snackbar-এ দেখানো হচ্ছে ---
+        Get.snackbar(
+          'Login Successful!',
+          "Token: $token", // এখানে টোকেন প্রিন্ট হবে
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+          duration: const Duration(seconds: 4), // টোকেন দেখার জন্য সময় বাড়ালাম
+        );
 
-        // সব পেজ রিমুভ করে হোম পেজে যাওয়া
+        // ইনপুট ক্লিয়ার করি
+        emailOrPhoneCtrl.clear();
+        passwordCtrl.clear();
+
+        // হোম পেজে যাই
         Get.offAll(() => const Basescreens());
 
       } else {
-        Get.snackbar('Failed', "Invalid Credentials or Server Error", snackPosition: SnackPosition.BOTTOM);
+        Get.snackbar(
+          'Login Failed',
+          response.data['message'] ?? "Invalid credentials",
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.orange,
+          colorText: Colors.white,
+        );
       }
     } catch (e) {
-      Get.snackbar('Error', "Something went wrong: $e", snackPosition: SnackPosition.BOTTOM);
+      print("Login Error: $e");
+      Get.snackbar(
+        'Error',
+        "Something went wrong. Check your connection.",
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    } finally {
+      isLoading(false);
     }
   }
 }
