@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:share_plus/share_plus.dart'; // Share এর জন্য
+import 'package:flutter/services.dart'; // Clipboard এর জন্য
+
 import '../controllers/get_post_controllers.dart';
-import '../controllers/like_controller.dart'; // ✅ ১. LikeController ইমপোর্ট
 import '../../view_post/screens/post_details.dart';
 
 class FeedScreen extends StatefulWidget {
@@ -16,7 +16,36 @@ class FeedScreen extends StatefulWidget {
 
 class _FeedScreenState extends State<FeedScreen> {
   final postController = Get.put(GetPostController());
-  final likeController = Get.put(LikeController());
+
+  // ✅ ডেট ফরম্যাটার ফাংশন (Time Ago)
+  String formatTimeAgo(String? dateString) {
+    if (dateString == null || dateString.isEmpty) {
+      return '';
+    }
+    try {
+      DateTime date = DateTime.parse(dateString);
+      final now = DateTime.now();
+      final difference = now.difference(date);
+
+      if (difference.inDays > 365) {
+        return '${(difference.inDays / 365).floor()} years ago';
+      } else if (difference.inDays > 30) {
+        return '${(difference.inDays / 30).floor()} months ago';
+      } else if (difference.inDays > 7) {
+        return '${(difference.inDays / 7).floor()} weeks ago';
+      } else if (difference.inDays >= 1) {
+        return '${difference.inDays} days ago';
+      } else if (difference.inHours >= 1) {
+        return '${difference.inHours} hours ago';
+      } else if (difference.inMinutes >= 1) {
+        return '${difference.inMinutes} minutes ago';
+      } else {
+        return 'Just now';
+      }
+    } catch (e) {
+      return dateString; // ফরম্যাট না হলে আসল ডেট দেখাবে
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,10 +57,12 @@ class _FeedScreenState extends State<FeedScreen> {
           },
           color: Colors.blue,
           child: Obx(() {
+            // --- ১. লোডিং অবস্থা (Shimmer Effect) ---
             if (postController.isLoading.value) {
               return _buildFacebookShimmerEffect();
             }
 
+            // --- ২. মেইন কন্টেন্ট ---
             return SingleChildScrollView(
               physics: const AlwaysScrollableScrollPhysics(),
               child: Column(
@@ -45,10 +76,16 @@ class _FeedScreenState extends State<FeedScreen> {
                       child: ListView(
                         scrollDirection: Axis.horizontal,
                         children: [
-                          storyCard("Create Story", "https://picsum.photos/200"),
+                          storyCard(
+                            "Create Story",
+                            "https://picsum.photos/200",
+                          ),
                           ...List.generate(
                             5,
-                                (i) => storyCard("Story $i", "https://picsum.photos/30$i"),
+                            (i) => storyCard(
+                              "Story $i",
+                              "https://picsum.photos/30$i",
+                            ),
                           ),
                         ],
                       ),
@@ -80,15 +117,19 @@ class _FeedScreenState extends State<FeedScreen> {
                                 children: [
                                   CircleAvatar(
                                     radius: 25,
-                                    backgroundImage: post.profile_picture_url != null
-                                        ? NetworkImage(post.profile_picture_url!)
+                                    backgroundImage:
+                                        post.profile_picture_url != null
+                                        ? NetworkImage(
+                                            post.profile_picture_url!,
+                                          )
                                         : const NetworkImage(
-                                      "https://cdn-icons-png.flaticon.com/512/149/149071.png",
-                                    ),
+                                            "https://cdn-icons-png.flaticon.com/512/149/149071.png",
+                                          ),
                                   ),
                                   const SizedBox(width: 10),
                                   Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         post.full_name ?? "Unknown User",
@@ -97,8 +138,9 @@ class _FeedScreenState extends State<FeedScreen> {
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
+                                      // ✅ এখানে ডেট ফরম্যাটার ব্যবহার করা হয়েছে
                                       Text(
-                                        post.created_at ?? "",
+                                        formatTimeAgo(post.created_at),
                                         style: const TextStyle(
                                           color: Colors.grey,
                                           fontSize: 12,
@@ -139,19 +181,17 @@ class _FeedScreenState extends State<FeedScreen> {
 
                               const SizedBox(height: 10),
 
-
+                              // --- অ্যাকশন বাটন ---
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
-
-
+                                  // লাইক বাটন
                                   LikeButton(
                                     isLiked: post.isLiked,
                                     likeCount: post.like_count ?? 0,
-                                    onTap: () {
-                                      // ইনডেক্স পাঠিয়ে লাইক টগল করা হচ্ছে
-                                      postController.toggleLike(index);
-                                    },
+                                    onTap: () =>
+                                        postController.toggleLike(index),
                                   ),
 
                                   // কমেন্ট বাটন
@@ -162,52 +202,71 @@ class _FeedScreenState extends State<FeedScreen> {
                                       Get.to(() => PostDetailPage(post: post));
                                     },
                                   ),
-// ৩. শেয়ার বাটন
+
+                                  // শেয়ার বাটন (Bottom Sheet সহ)
                                   interactionButton(
                                     Icons.share,
                                     "Share",
                                     onTap: () {
-                                      // আপনার সার্ভার আইপি এবং পোস্ট আইডি দিয়ে লিংক তৈরি
-                                      // ⚠️ আপনার আইপি ঠিক আছে তো? android manifest এর সাথে মিল থাকতে হবে
-                                      String postLink = "http://192.168.1.112/post?id=${post.post_id}";
+                                      // লিংক তৈরি (আপনার সার্ভার আইপি অনুযায়ী)
+                                      String postLink =
+                                          "http://192.168.1.112/post?id=${post.post_id}";
 
-                                      // Bottom Sheet ওপেন করা
                                       showModalBottomSheet(
                                         context: context,
                                         shape: const RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                                          borderRadius: BorderRadius.vertical(
+                                            top: Radius.circular(20),
+                                          ),
                                         ),
                                         builder: (context) {
                                           return Container(
                                             padding: const EdgeInsets.all(20),
                                             height: 200,
                                             child: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
                                               children: [
                                                 const Text(
                                                   "Share this post",
-                                                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                                                  style: TextStyle(
+                                                    fontSize: 18,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
                                                 ),
                                                 const SizedBox(height: 20),
-
-                                                // 🔗 অপশন ১: লিংক কপি করা
                                                 ListTile(
-                                                  leading: const Icon(Icons.copy),
-                                                  title: const Text("Copy Link"),
+                                                  leading: const Icon(
+                                                    Icons.copy,
+                                                  ),
+                                                  title: const Text(
+                                                    "Copy Link",
+                                                  ),
                                                   onTap: () {
-                                                    Clipboard.setData(ClipboardData(text: postLink));
-                                                    Get.back(); // মেনু বন্ধ
-                                                    Get.snackbar("Success", "Link copied to clipboard!");
+                                                    Clipboard.setData(
+                                                      ClipboardData(
+                                                        text: postLink,
+                                                      ),
+                                                    );
+                                                    Get.back();
+                                                    Get.snackbar(
+                                                      "Success",
+                                                      "Link copied!",
+                                                    );
                                                   },
                                                 ),
-
-                                                // 📤 অপশন ২: শেয়ার করা
                                                 ListTile(
-                                                  leading: const Icon(Icons.share),
-                                                  title: const Text("Share via..."),
+                                                  leading: const Icon(
+                                                    Icons.share,
+                                                  ),
+                                                  title: const Text(
+                                                    "Share via...",
+                                                  ),
                                                   onTap: () {
                                                     Get.back();
-                                                    Share.share("Check out this post: $postLink");
+                                                    Share.share(
+                                                      "Check out this post: $postLink",
+                                                    );
                                                   },
                                                 ),
                                               ],
@@ -216,7 +275,8 @@ class _FeedScreenState extends State<FeedScreen> {
                                         },
                                       );
                                     },
-                                  ),    ],
+                                  ),
+                                ],
                               ),
                               const SizedBox(height: 20),
                             ],
@@ -266,13 +326,21 @@ class _FeedScreenState extends State<FeedScreen> {
                         const SizedBox(height: 5),
                         Container(width: 80, height: 10, color: Colors.white),
                       ],
-                    )
+                    ),
                   ],
                 ),
                 const SizedBox(height: 15),
-                Container(width: double.infinity, height: 10, color: Colors.white),
+                Container(
+                  width: double.infinity,
+                  height: 10,
+                  color: Colors.white,
+                ),
                 const SizedBox(height: 5),
-                Container(width: double.infinity, height: 10, color: Colors.white),
+                Container(
+                  width: double.infinity,
+                  height: 10,
+                  color: Colors.white,
+                ),
                 const SizedBox(height: 10),
                 Container(
                   width: double.infinity,
@@ -333,9 +401,7 @@ class _FeedScreenState extends State<FeedScreen> {
   }
 }
 
-// ==========================================
-// ✅ অ্যানিমেটেড লাইক বাটন উইজেট
-// ==========================================
+// ✅ লাইক বাটন উইজেট (Animation সহ)
 class LikeButton extends StatefulWidget {
   final bool isLiked;
   final int likeCount;
@@ -352,7 +418,8 @@ class LikeButton extends StatefulWidget {
   State<LikeButton> createState() => _LikeButtonState();
 }
 
-class _LikeButtonState extends State<LikeButton> with SingleTickerProviderStateMixin {
+class _LikeButtonState extends State<LikeButton>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;
 
@@ -363,9 +430,10 @@ class _LikeButtonState extends State<LikeButton> with SingleTickerProviderStateM
       duration: const Duration(milliseconds: 200),
       vsync: this,
     );
-    _scaleAnimation = Tween<double>(begin: 1.0, end: 1.2).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-    );
+    _scaleAnimation = Tween<double>(
+      begin: 1.0,
+      end: 1.2,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
   }
 
   @override
@@ -386,16 +454,13 @@ class _LikeButtonState extends State<LikeButton> with SingleTickerProviderStateM
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        // ১. বাউন্স অ্যানিমেশন
         _controller.forward().then((_) => _controller.reverse());
-        // ২. কন্ট্রোলারের ফাংশন কল
         widget.onTap();
       },
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Row(
           children: [
-            // আইকন স্কেল অ্যানিমেশন
             ScaleTransition(
               scale: _scaleAnimation,
               child: Icon(
@@ -405,13 +470,14 @@ class _LikeButtonState extends State<LikeButton> with SingleTickerProviderStateM
               ),
             ),
             const SizedBox(width: 6),
-            // টেক্সট কালার আপডেট
             Text(
               "${widget.likeCount} Likes",
               style: TextStyle(
                 fontSize: 14,
                 color: widget.isLiked ? Colors.red : Colors.black87,
-                fontWeight: widget.isLiked ? FontWeight.bold : FontWeight.normal,
+                fontWeight: widget.isLiked
+                    ? FontWeight.bold
+                    : FontWeight.normal,
               ),
             ),
           ],
