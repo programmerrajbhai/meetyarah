@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:shimmer/shimmer.dart';
 import '../controllers/get_post_controllers.dart';
 import '../controllers/like_controller.dart'; // ✅ ১. LikeController ইমপোর্ট
@@ -160,10 +162,61 @@ class _FeedScreenState extends State<FeedScreen> {
                                       Get.to(() => PostDetailPage(post: post));
                                     },
                                   ),
+// ৩. শেয়ার বাটন
+                                  interactionButton(
+                                    Icons.share,
+                                    "Share",
+                                    onTap: () {
+                                      // আপনার সার্ভার আইপি এবং পোস্ট আইডি দিয়ে লিংক তৈরি
+                                      // ⚠️ আপনার আইপি ঠিক আছে তো? android manifest এর সাথে মিল থাকতে হবে
+                                      String postLink = "http://192.168.1.112/post?id=${post.post_id}";
 
-                                  // শেয়ার বাটন
-                                  interactionButton(Icons.share, "Share"),
-                                ],
+                                      // Bottom Sheet ওপেন করা
+                                      showModalBottomSheet(
+                                        context: context,
+                                        shape: const RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                                        ),
+                                        builder: (context) {
+                                          return Container(
+                                            padding: const EdgeInsets.all(20),
+                                            height: 200,
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                const Text(
+                                                  "Share this post",
+                                                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                                                ),
+                                                const SizedBox(height: 20),
+
+                                                // 🔗 অপশন ১: লিংক কপি করা
+                                                ListTile(
+                                                  leading: const Icon(Icons.copy),
+                                                  title: const Text("Copy Link"),
+                                                  onTap: () {
+                                                    Clipboard.setData(ClipboardData(text: postLink));
+                                                    Get.back(); // মেনু বন্ধ
+                                                    Get.snackbar("Success", "Link copied to clipboard!");
+                                                  },
+                                                ),
+
+                                                // 📤 অপশন ২: শেয়ার করা
+                                                ListTile(
+                                                  leading: const Icon(Icons.share),
+                                                  title: const Text("Share via..."),
+                                                  onTap: () {
+                                                    Get.back();
+                                                    Share.share("Check out this post: $postLink");
+                                                  },
+                                                ),
+                                              ],
+                                            ),
+                                          );
+                                        },
+                                      );
+                                    },
+                                  ),    ],
                               ),
                               const SizedBox(height: 20),
                             ],
