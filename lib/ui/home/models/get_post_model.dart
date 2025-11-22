@@ -7,8 +7,10 @@ class GetPostModel {
   String? username;
   String? full_name;
   String? profile_picture_url;
-  int? like_count;
-  int? comment_count;
+
+  int like_count;
+  int comment_count;
+  bool isLiked;
 
   GetPostModel({
     this.post_id,
@@ -19,8 +21,10 @@ class GetPostModel {
     this.username,
     this.full_name,
     this.profile_picture_url,
-    this.like_count,
-    this.comment_count,
+
+    this.like_count = 0, // ডিফল্ট ০
+    this.comment_count = 0, // ডিফল্ট ০
+    this.isLiked = false,
   });
 
   factory GetPostModel.fromJson(Map<String, dynamic> json) {
@@ -33,21 +37,16 @@ class GetPostModel {
       username: json['username']?.toString(),
       full_name: json['full_name']?.toString(),
       profile_picture_url: json['profile_picture_url']?.toString(),
-      like_count: _toInt(json['like_count']),
-      comment_count: _toInt(json['comment_count']),
-    );
+      like_count: int.tryParse(json['like_count'].toString()) ?? 0,
+      comment_count: int.tryParse(json['comment_count'].toString()) ?? 0,
+
+      isLiked: json['is_liked'] == true || json['is_liked'] == 1 || json['is_liked'] == "1",  );
   }
 
-  // -------- Safe Parser --------
   static int? _toInt(dynamic value) {
     if (value == null) return null;
-
     if (value is int) return value;
-
-    if (value is String) {
-      return int.tryParse(value);
-    }
-
-    return null; // unexpected type
+    if (value is String) return int.tryParse(value);
+    return null;
   }
 }
