@@ -12,9 +12,10 @@ import 'package:meetyarah/ui/view_post/screens/post_details.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+
   // AuthService ইনিশিয়ালাইজ করা
   await Get.putAsync(() => AuthService().init());
-
   runApp(const MyApp());
 }
 
@@ -36,9 +37,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<void> _initDeepLinks() async {
-    _appLinks = AppLinks(); // ✅ এখানেও বানান ঠিক করা হয়েছে
-
-    // অ্যাপ যখন ব্যাকগ্রাউন্ড বা টার্মিনেটেড অবস্থা থেকে লিংকের মাধ্যমে ওপেন হবে
+    _appLinks = AppLinks();
     _appLinks.uriLinkStream.listen((Uri? uri) {
       if (uri != null) {
         print("🔗 Deep Link Found: $uri");

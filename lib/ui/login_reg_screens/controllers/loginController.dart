@@ -11,7 +11,7 @@ class LoginController extends GetxController {
 
   var isLoading = false.obs;
 
-  // AuthService খুঁজে বের করি
+  // AuthService খুঁজে বের করা
   final AuthService _authService = Get.find<AuthService>();
 
   Future<void> LoginUser() async {
@@ -20,10 +20,10 @@ class LoginController extends GetxController {
 
     if (email.isEmpty || password.isEmpty) {
       Get.snackbar(
-        'Error',
+        'Warning',
         "Please enter both email and password",
         snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.redAccent,
+        backgroundColor: Colors.orangeAccent,
         colorText: Colors.white,
       );
       return;
@@ -37,50 +37,52 @@ class LoginController extends GetxController {
         "password": password,
       };
 
+      print("🔹 Logging in with: $email"); // Debugging Log
+
       networkResponse response = await networkClient.postRequest(
         url: Urls.loginApi,
         body: requestBody,
       );
+
+      print("🔹 API Response: ${response.statusCode} - ${response.data}"); // Debugging Log
 
       if (response.statusCode == 200 && response.data['status'] == 'success') {
 
         String token = response.data['token'];
         Map<String, dynamic> userData = response.data['user'];
 
-        // AuthService-এ ডাটা সেভ করি
+        // AuthService-এ ডাটা সেভ করা
         await _authService.saveUserSession(token, userData);
 
-        // --- পরিবর্তন: টোকেনটি Snackbar-এ দেখানো হচ্ছে ---
         Get.snackbar(
-          'Login Successful!',
-          "Token: $token", // এখানে টোকেন প্রিন্ট হবে
+          'Success',
+          "Login Successfully Done!",
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: Colors.green,
           colorText: Colors.white,
-          duration: const Duration(seconds: 4), // টোকেন দেখার জন্য সময় বাড়ালাম
         );
 
-        // ইনপুট ক্লিয়ার করি
+        // ইনপুট ক্লিয়ার করা
         emailOrPhoneCtrl.clear();
         passwordCtrl.clear();
 
-        // হোম পেজে যাই
+        // হোম পেজে যাওয়া
         Get.offAll(() => const Basescreens());
 
       } else {
         Get.snackbar(
           'Login Failed',
-          response.data['message'] ?? "Invalid credentials",
+          response.data['message'] ?? "Invalid Email or Password",
           snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.orange,
+          backgroundColor: Colors.redAccent,
           colorText: Colors.white,
         );
       }
     } catch (e) {
-      print("Login Error: $e");
+      print("❌ Login Error: $e");
       Get.snackbar(
         'Error',
-        "Something went wrong. Check your connection.",
+        "Connection Error. Check Internet or IP.",
         snackPosition: SnackPosition.BOTTOM,
       );
     } finally {

@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart';
 import 'package:get/get.dart' hide Response;
 
-import '../../ui/login_reg_screens/controllers/auth_service.dart';
+import '../../ui/login_reg_screens/controllers/auth_controller.dart';
 
 class networkResponse {
   final bool isSuccess;

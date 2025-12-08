@@ -3,25 +3,20 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:meetyarah/assetsPath/image_url.dart';
 import 'package:meetyarah/assetsPath/textColors.dart';
-import 'package:meetyarah/ui/home/screens/baseScreens.dart';
 import 'package:meetyarah/ui/login_reg_screens/controllers/loginController.dart';
 import 'package:meetyarah/ui/login_reg_screens/screens/forget_screen.dart';
 import 'package:meetyarah/ui/login_reg_screens/screens/reg_screen.dart';
 import '../widgets/Textfromfield.dart';
 import '../widgets/containnerBox.dart';
 
-class LoginScreen extends StatefulWidget {
+class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
-  @override
-  State<LoginScreen> createState() => _LoginScreenState();
-}
-
-class _LoginScreenState extends State<LoginScreen> {
-
-  final loginController= Get.put(LoginController());
 
   @override
   Widget build(BuildContext context) {
+    // কন্ট্রোলার ইনিশিয়ালাইজ করা হলো
+    final LoginController loginController = Get.put(LoginController());
+
     return Scaffold(
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
@@ -31,96 +26,108 @@ class _LoginScreenState extends State<LoginScreen> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Image.asset(
-                ImagePath.appLogotransparent,
-                width: Get.width * 1,
-                height: Get.height * 0.35,
+              const SizedBox(height: 50),
+              Center(
+                child: Image.asset(
+                  ImagePath.appLogotransparent,
+                  height: Get.height * 0.25,
+                  fit: BoxFit.contain,
+                ),
               ),
+              const SizedBox(height: 20),
+
               textfromfield(
-                icon: Icons.account_box,
-                text: 'Email or Phone Number',
-                controller:loginController.emailOrPhoneCtrl,
+                icon: Icons.email,
+                text: 'Email or Username',
+                controller: loginController.emailOrPhoneCtrl,
               ),
-              SizedBox(height: 8),
+              const SizedBox(height: 10),
+
               textfromfield(
                 icon: Icons.lock,
                 text: 'Password',
                 controller: loginController.passwordCtrl,
               ),
-              TextButton(
-                onPressed: () {
-                  Get.to(ForgotScreens());
-                },
-                child: Text(
-                  "Forgot Password",
-                  style: TextStyle(color: ColorPath.deepBlue, fontSize: 16),
+
+              Align(
+                alignment: Alignment.centerRight,
+                child: TextButton(
+                  onPressed: () {
+                    Get.to(() => const ForgotScreens());
+                  },
+                  child: const Text(
+                    "Forgot Password?",
+                    style: TextStyle(color: ColorPath.deepBlue, fontSize: 14),
+                  ),
                 ),
               ),
-              SizedBox(height: 16),
-              InkWell(
+
+              const SizedBox(height: 10),
+
+              // ✅ লগইন বাটন এবং লোডিং ইন্ডিকেটর
+              Obx(() => loginController.isLoading.value
+                  ? const Center(child: CircularProgressIndicator(color: ColorPath.deepBlue))
+                  : containnerBox(
                 onTap: () {
-                  loginController.LoginUser();
+                  loginController.LoginUser(); // ফাংশন কল
                 },
-                child: containnerBox(
-                  bgColors: ColorPath.deepBlue,
-                  text: "LOGIN",
-                  textColors: Colors.white,
-                ),
+                bgColors: ColorPath.deepBlue,
+                text: "LOGIN",
+                textColors: Colors.white,
+              )
               ),
-              SizedBox(height: 14),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 25.0,
-                  vertical: 10.0,
-                ),
-                child: Row(
-                  children: <Widget>[
-                    Expanded(
-                      child: Divider(thickness: 1, color: Colors.grey[400]),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                      child: Text(
-                        'or',
-                        style: TextStyle(color: Colors.grey[700], fontSize: 16),
-                      ),
-                    ),
-                    Expanded(
-                      child: Divider(thickness: 1, color: Colors.grey[400]),
-                    ),
-                  ],
-                ),
+
+              const SizedBox(height: 20),
+
+              // অথবা গুগল সাইন ইন সেকশন
+              Row(
+                children: [
+                  Expanded(child: Divider(thickness: 1, color: Colors.grey[300])),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                    child: Text('or', style: TextStyle(color: Colors.grey[600])),
+                  ),
+                  Expanded(child: Divider(thickness: 1, color: Colors.grey[300])),
+                ],
               ),
-              SizedBox(height: 14),
+
+              const SizedBox(height: 20),
+
               containnerBox(
                 bgColors: Colors.white,
-                text: 'Sign in by google',
+                text: 'Sign in with Google',
                 prefixIcons: ImagePath.gogoleIcon,
                 textColors: Colors.black,
+                onTap: (){
+                  // গুগল সাইন ইন লজিক
+                },
               ),
-              SizedBox(height: 40),
+
+              const SizedBox(height: 30),
+
               Center(
                 child: RichText(
                   text: TextSpan(
                     text: "Don't have an account? ",
-                    style: TextStyle(color: Colors.grey, fontSize: 16),
+                    style: const TextStyle(color: Colors.grey, fontSize: 16),
                     children: [
                       TextSpan(
                         text: 'Sign Up',
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: Colors.indigoAccent,
                           fontWeight: FontWeight.bold,
                           decoration: TextDecoration.underline,
                         ),
                         recognizer: TapGestureRecognizer()
                           ..onTap = () {
-                            Get.to(RegistrationScreens());
+                            Get.to(() => const RegistrationScreens());
                           },
                       ),
                     ],
                   ),
                 ),
               ),
+              const SizedBox(height: 20),
             ],
           ),
         ),
